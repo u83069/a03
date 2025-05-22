@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>無標題文件</title>
+
+<script>
+var clock1 = 0; //宣告一個時鐘clock
+window.onload = function(){ //第一題，視窗載入時，造19*19個按鈕方陣
+	var map = "0000000000000000000011011011001111101001011010010001111100011111100101101100011011110111111111000101110101101111000111000010011110010001110111101010101001010001100101010100111001111110101000011101111111101111000111111111011110100101011111100001110011101111111011111001101100011111011000101101101110011010011111110111100011001110111101011111100000000000000000000";
+	for(var i=0;i<361;i++ ){
+		var input = document.createElement("input");
+		input.type = "button"; //宣告成按鈕
+		input.id= "button";//同名宣告，以便後續可以用button[i]去存取
+		input.style.width="50px";
+		input.style.height="50px";
+		input.style.fontSize="25px";
+		input.onclick=button_click(i);
+		if (map.charAt(i)=='0')  //馬賽克磚
+			input.style.backgroundColor="red";		
+		else
+			input.style.backgroundColor="white";		
+		if (i<=18 || i>=342 || i%19==0 || i%19==18)  //邊界處理
+		//input.style.backgroundColor=colorB;	
+		input.style.visibility="hidden";
+		//input.onclick=abc(i);
+		document.getElementById("form1").appendChild(input);
+		if (i % 19==18) //19個換行
+			document.getElementById("form1").appendChild( document.createElement("br"));		
+	}//for end
+}//onload end
+function button_click(index) {
+	return function() {
+		if (button[index].style.backgroundColor!="red")
+			button[index].style.backgroundColor="red";
+		else
+			button[index].style.backgroundColor="white";
+	}
+}
+function detect() {
+	// 計算程式執行時間 (高精度)
+	const start = performance.now();  // 記錄開始時間
+	for (i=0;i<361;i++)  //清除前次結果
+		if (button[i].style.backgroundColor=="yellow")
+			button[i].style.backgroundColor="white"
+	var ma = 0;   // 最大面積
+	var mx1, mx2, my1, my2;
+	
+	for ( Y1 = 1; Y1 <= 18; Y1++) {  // 窮舉 x1 y1 到 x2 y2
+	for ( X1 = 1; X1 <= 18; X1++) {
+		for ( Y2 = Y1 + 1; Y2 <= 18; Y2++) {
+			for ( X2 = X1 + 1; X2 <= 18; X2++) {
+				// 獲取按鈕元素
+				 tf = true;  // 假設沒有障礙物
+	
+				// 檢查區域內是否有障礙物
+				for ( x = X1; x <= X2; x++) {
+					for ( y = Y1; y <= Y2; y++) {
+						 btn = button[y*19+x];
+						if (btn.style.backgroundColor === "red") {  // 假設紅色是障礙物
+							tf = false;  // 發現障礙物，跳出
+							break;
+						}
+					}
+					if (!tf) break;  // 發現障礙物，跳出
+				}
+	
+				if (tf) {  // 沒有障礙物，可以計算面積
+					 a = (X2 - X1 + 1) * (Y2 - Y1 + 1);
+					if (a > ma) {  // 面積大於最大面積則更新
+						console.log(ma);
+						ma = a;
+						mx1 = X1;
+						mx2 = X2;
+						my1 = Y1;
+						my2 = Y2;
+					}
+				}
+			}
+		}
+	}
+	}
+	
+	
+	info.innerText="最大面積:"+ma + " " + mx1 + " " + my1 + " " + mx2 + " " + my2;
+	//第四題，把降落點以黃色標示
+	for (i=mx1;i<=mx2;i++)
+		for (j=my1;j<=my2;j++)
+			button[j*19+i].style.backgroundColor="yellow";
+	const end = performance.now();    // 記錄結束時間
+	const executionTime = end - start;  // 計算執行時間
+	info.innerText+="執行時間" + executionTime.toFixed(4) + "毫秒";
+	//console.log(`程式執行時間: ${executionTime.toFixed(4)} 毫秒`);
+}
+</script>
+</head>
+<body>
+<h1>懸停避障暴力法O(N<sup>6</sup>)<span style="width:1000px;height:550px; border-bottom:thick; border-bottom-color:#6F0">
+  <input type="button" id="detect" value="偵測最大矩形平地" onclick="detect();" style=" font-size:32px"/>
+</span></h1>
+<table>
+<tr><td><div id="form1"></div></td><td><img src="a.jpg" alt="" width="337" height="430" /></td></tr></table>
+<h1>
+  <label id="info">aaa</label>
+</h1>
+</body>
+</html>
+
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>無標題文件</title>
+<script>
+function abc(index) {
+	 return function () {
+		if (this.value==" ") {
+			this.value=0;
+			this.style.backgroundColor="#00FF00";
+			var a=0,b=0;
+			for (var i=0;i<100;i++) {
+				if (eval("button"+i).value>a) {
+					a=eval("button"+i).value;
+					b=i;
+				}
+			}
+			eval("button"+b).style.backgroundColor="#FF0000";
+			eval("button"+b).value=" ";
+			info.innerText="位置:"+b+";電量:"+a;
+//			alert(a);
+//			alert(b);
+		}
+			
+	 }
+}
+window.onload = function(){
+	// 定義一個陣列 arrs
+	//var arrs = new Array();
+	// 迴圈新增
+	for(var i=0;i<100;i++ ){
+	// 迴圈新增兩個 input type="button" value="新增" i
+	var input = document.createElement("input");
+	input.type = "button";
+	input.id= "button"+i;
+	input.value = Math.floor(Math.random()*100+1);
+	input.style.backgroundColor="#00FF00";
+	input.style.width="100px";
+	input.onclick=abc(i);
+	
+	// 記得把建立的 input 放入 arrs 中
+	//arrs.push(input);
+	// 然後把 input 放入 id="add" 的div中
+	document.getElementById("form1").appendChild(input);
+	if (i % 10==9) 
+		document.getElementById("form1").appendChild( document.createElement("br"));
+	
+	}
+	button98.value=" ";
+	button99.value=" ";
+	button98.style.backgroundColor="#FF0000";
+	button99.style.backgroundColor="#FF0000";
+}
+</script>
+</head>
+<body>
+<div id="form1"></div>
+<label id="info">aaa</label>
+
+</body>
+</html>-->
